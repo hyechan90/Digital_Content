@@ -1,6 +1,5 @@
-var mongoose = require("mongoose");
-
 // 로컬 데이터 베이스에 접속
+var mongoose = require("mongoose");
 mongoose.connect('mongodb://localhost:27017/userData', {useUnifiedTopology: true, useNewUrlParser: true});
 var db = mongoose.connection;
 
@@ -10,31 +9,29 @@ db.once('open',function callback(){
     console.log('DB On!');
 });
 
-var User = new mongoose.Schema();
+// 유저 스키마
+var User = new mongoose.Schema({
+    id: String
+    ,password: String
+    ,email: String
+    ,phone: String
+    ,age: Number
+    ,itemID: String
+});
 
-// 유저 스키마 생성
-User.add({
-    id: String,
-    password: String,
-    email: String,
-    phone: String,
-    age: Number,
-    items: [String],
+
+// 아이템 스키마
+var Item = new mongoose.Schema({
+    name: String
+    ,place: String
+    ,date: Date
+    ,img: { data: Buffer, contentType: String }
 });
 
 // 유저 스키마 전송
 var userModel = mongoose.model('user',User);
 exports.User = userModel;
 
-// 물품 스키마 생성
-var Item = new mongoose.Schema();
-
-Item.add({
-    name: String,
-    place: String,
-    date: Date,
-});
-
-// 물품 스키마 전송
+// 아이템 스키마 전송
 var itemModel = mongoose.model('item',Item);
 exports.Item = itemModel;

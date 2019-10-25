@@ -1,12 +1,15 @@
 var express = require('express');
-var router = express.Router();
+var multer = require('multer')
+var path = require('path');
+var crypto = require('crypto');
+var fs = require('fs');
 var app = express();
 
 // DB/User 안에 있는 데이터들을 갖어옴
-var { User, Item } = require('../DB/DB');
+var { User, Item } = require('../DB/User');
 
 // GET
-app.get('/', (req, res, next) => {
+app.get('/', (req, res) => {
   console.log("Server Running...");
   res.send("Server Running...");
 });
@@ -37,10 +40,8 @@ app.get('/get/Item', (req, res) => {
 // POST
 
 // 회원가입
-app.post('/post/newUser', (req, res) => {
+app.post('/post/register', (req, res) => {
   console.log(req.body);
-  let id = req.body.id;
-  let password = req.body.password;
   let email = req.body.email;
   User.findOne({ email: email }, function (err, result) {
     if (err) throw err;
@@ -50,9 +51,11 @@ app.post('/post/newUser', (req, res) => {
           if (err) throw err;
           if (result == null) {//새로 만들때
             let user = new User({
-              id: id,
-              password: password,
-              email: email,
+              id: req.body.id
+              ,password: req.body.password
+              ,email: email
+              ,age: req.body.age
+              ,phone: req.body.phone
             });
             user.save((err, result) => {
               if (err) throw err;
@@ -76,24 +79,24 @@ app.post('/post/newUser', (req, res) => {
 });
 
 // 유저 로그인
-app.post('/post/login', (req,res)=>{
+app.post('/post/login', (req, res) => {
   let login = new User({
     id: req.body.id,
     passwd: req.body.passwd
   });
-  User.findOne({id:login.id},function(err,result){
-    if(err) throw err;
-    if(result != null){// 만약 계정이 있을 때
-      if(result.passwd != login.passwd){// 만약 비밀번호가 틀렸을 때
+  User.findOne({ id: login.id }, function (err, result) {
+    if (err) throw err;
+    if (result != null) {// 만약 계정이 있을 때
+      if (result.passwd != login.passwd) {// 만약 비밀번호가 틀렸을 때
         console.log('잘못된 비번입니다.');
-        res.status(404).send({"msg": "잘못된 비번입니다."});
-      }else{
+        res.status(404).send({ "msg": "잘못된 비번입니다." });
+      } else {
         console.log(result);
         res.send(result);
       }
-    }else{
+    } else {
       console.log('없는 계정입니다.');
-      res.status(404).send({"msg": "없는 계정입니다."});
+      res.status(404).send({ "msg": "없는 계정입니다." });
     }
   });
 })
@@ -126,33 +129,20 @@ app.post('/post/deleteUser', (req, res) => {
 // 물품 등록
 app.post('/post/addItem', (req, res) => {
   let id = req.body.id;
-  let name = req.body.name;
-  let place = req.body.place;
-  let date = new Date;
-
-  let Item = new Item({
-    name: name,
-    place: place,
-    date: date,
+  User.findOne({id: id}).exec((err,result)=>{
+    if(err) throw err;
+    if(result != null){
+        
+    }else{
+      console.log("잘못된 값이 전달되었습니다.");
+      res.status(500).send({"msg":"잘못된 값이 전달되었습니다."});
+    }
   });
-  item.save((err, result) => {
-    if (err) throw err;
-    console.log(result)
-    res.send(result);
-  });
-  User.findOne({ id: id }, (err, result) => {
-    if (err) throw err;
-    console.log(result);
-    result.update(
-      {$push: {items: id}}
-    )
-    result.Item.push();
-  });
-})
+});
 
 // 이메일 서식에 맞는지 확인
 function validateEmail(email) {
-  var re = /\S+@\S+\.\S+/;
+  var re = /\S+@\S+\.com+/;
   return re.test(email);
 }
 
