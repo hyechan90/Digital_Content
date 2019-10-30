@@ -132,7 +132,10 @@ app.post('/post/addItem', (req, res) => {
   User.findOne({id: id}).exec((err,result)=>{
     if(err) throw err;
     if(result != null){
-        
+        result.update({itemID: id},(err,result)=>{
+          if(err) throw err;
+          console.log(result);
+        })
     }else{
       console.log("잘못된 값이 전달되었습니다.");
       res.status(500).send({"msg":"잘못된 값이 전달되었습니다."});
@@ -140,10 +143,18 @@ app.post('/post/addItem', (req, res) => {
   });
 });
 
+app.post('/post/changeUser', (req,res)=>{
+  var id = req.body.id;
+  User.findOne({id:id}).exec((err,result)=>{
+    if(err) throw err;
+    result.updateOne
+  });
+})
+
 // 이메일 서식에 맞는지 확인
 function validateEmail(email) {
-  var re = /\S+@\S+\.com+/;
-  return re.test(email);
+  var check = /\S+@\S+\.\S+/;
+  return check.test(email);
 }
 
 module.exports = app;

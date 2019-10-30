@@ -19,13 +19,11 @@ var User = new mongoose.Schema({
     ,itemID: String
 });
 
-
 // 아이템 스키마
 var Item = new mongoose.Schema({
     name: String
     ,place: String
     ,date: Date
-    ,img: { data: Buffer, contentType: String }
 });
 
 // 유저 스키마 전송
