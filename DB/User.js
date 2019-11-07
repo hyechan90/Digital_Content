@@ -20,7 +20,7 @@ var User = new mongoose.Schema({
   email: String,
   phone: String,
   age: Number,
-  itemID: String
+  schoolID: Number
 });
 
 // 아이템 스키마
