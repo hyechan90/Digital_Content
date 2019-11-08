@@ -48,10 +48,12 @@ app.post('/post/register', (req, res) => {
   console.log(req.body);
   const email = req.body.email;
   const schoolId = req.body.schoolId;
-  User.findOne({ email: email }, function(err, result) {
-    if (err) throw err;
-    if (result == null) {
-      if (validateEmail(email)) {
+
+  if (err) throw err;
+  if (result == null) {
+    User.findOne({ id: id }, function(err, result) {
+      if (err) throw err;
+      if (result == null) {
         User.findOne({ schoolId: schoolId }, function(err, result) {
           if (err) throw err;
           User.findOne({ schoolId: schoolId });
@@ -69,29 +71,26 @@ app.post('/post/register', (req, res) => {
               res.send(result);
             });
           } else {
-            // 이미 아이디 또는 계정이 있을 때
-            console.log('이미 사용 중인 아이디가 있습니다.');
-            res.status(404).send({ msg: '이미 사용 중인 아이디가 있습니다.' });
+            console.log('이미 사용 중인 학번이 있습니다.');
+            res.status(404).send({ msg: '이미 사용 중인 학번이 있습니다.' });
           }
         });
       } else {
-        console.log('이메일 형식에 맞지 않습니다.');
-        res.status(404).send({ msg: '이메일 형식에 맞지 않습니다.' });
+        // 이미 아이디 또는 계정이 있을 때
+        console.log('이미 사용 중인 아이디가 있습니다.');
+        res.status(404).send({ msg: '이미 사용 중인 아이디가 있습니다.' });
       }
-    } else {
-      console.log('이미 사용 중인 계정이 있습니다.');
-      res.status(404).send({ msg: '이미 사용 중인 계정이 있습니다.' });
-    }
-  });
+    });
+  }
 });
 
 // 유저 로그인
 app.post('/post/login', (req, res) => {
   let login = new User({
-    name: req.body.name,
+    id: req.body.id,
     passwd: req.body.passwd,
   });
-  User.findOne({ name: login.name }, function(err, result) {
+  User.findOne({ id: login.id }, function(err, result) {
     if (err) throw err;
     if (result != null) {
       // 만약 계정이 있을 때
@@ -161,11 +160,4 @@ app.post('/post/changeUser', (req, res) => {
     result.updateOne;
   });
 });
-
-// 이메일 서식에 맞는지 확인
-function validateEmail(email) {
-  var check = /\S+@\S+\.\S+/;
-  return check.test(email);
-}
-
 module.exports = app;

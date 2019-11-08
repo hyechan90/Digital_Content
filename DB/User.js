@@ -17,7 +17,7 @@ db.once('open', function callback() {
 var User = new mongoose.Schema({
   name: String,
   password: String,
-  email: String,
+  id: String,
   schoolId: String,
 });
 
