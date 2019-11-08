@@ -91,7 +91,7 @@ app.post('/post/login', (req, res) => {
     name: req.body.name,
     passwd: req.body.passwd,
   });
-  User.findOne({ name: name }, function(err, result) {
+  User.findOne({ name: login.name }, function(err, result) {
     if (err) throw err;
     if (result != null) {
       // 만약 계정이 있을 때
