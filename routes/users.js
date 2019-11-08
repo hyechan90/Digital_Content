@@ -88,10 +88,10 @@ app.post('/post/register', (req, res) => {
 // 유저 로그인
 app.post('/post/login', (req, res) => {
   let login = new User({
-    id: req.body.id,
+    name: req.body.name,
     passwd: req.body.passwd,
   });
-  User.findOne({ id: login.id }, function(err, result) {
+  User.findOne({ name: name }, function(err, result) {
     if (err) throw err;
     if (result != null) {
       // 만약 계정이 있을 때
