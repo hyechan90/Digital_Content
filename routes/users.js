@@ -52,7 +52,7 @@ app.post('/post/register', (req, res) => {
     if (err) throw err;
     if (result == null) {
       if (validateEmail(email)) {
-        User.findOne({ id: id }, function(err, result) {
+        User.findOne({ schoolId: schoolId }, function(err, result) {
           if (err) throw err;
           User.findOne({ schoolId: schoolId });
           if (result == null) {
